@@ -19,12 +19,14 @@ gsap.ticker.add((time) => lenis.raf(time * 1000));
 gsap.ticker.lagSmoothing(0);
 
 // Smooth anchor click scrolling (respects Lenis)
+const navOffset = () => -(document.getElementById('nav')?.offsetHeight || 76);
+
 document.querySelectorAll('a[href^="#"]').forEach((link) => {
   link.addEventListener('click', (e) => {
     const target = document.querySelector(link.getAttribute('href'));
     if (!target) return;
     e.preventDefault();
-    lenis.scrollTo(target, { offset: -76, duration: 1.4 });
+    lenis.scrollTo(target, { offset: navOffset(), duration: 1.4 });
   });
 });
 
@@ -45,9 +47,10 @@ ScrollTrigger.create({
   start: 'top top',
   end: 'bottom bottom',
   onUpdate: () => {
+    const navH = document.getElementById('nav')?.offsetHeight || 76;
     let current = '';
     document.querySelectorAll('section[id]').forEach((s) => {
-      if (window.scrollY >= s.offsetTop - 140) current = s.id;
+      if (window.scrollY >= s.offsetTop - navH - 64) current = s.id;
     });
     navLinks.forEach((a) => {
       a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
@@ -78,7 +81,7 @@ const closeMenu = () => {
 
 hamburger.addEventListener('click', openMenu);
 menuClose.addEventListener('click', closeMenu);
-document.querySelectorAll('.mobile-link, .mobile-cta-link').forEach((l) => l.addEventListener('click', closeMenu));
+document.querySelectorAll('.mobile-link, .mobile-cta-link, .mobile-wa-link').forEach((l) => l.addEventListener('click', closeMenu));
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
 
 
@@ -221,7 +224,7 @@ if (statNum) {
   const sec = document.querySelector(sel);
   if (!sec) return;
   const ey = sec.querySelector('.eyebrow');
-  const h  = sec.querySelector('.sec-heading');
+  const h  = sec.querySelector('.sec-heading, .contact-heading');
   if (ey) gsap.set(ey, { y: 20, opacity: 0 });
   if (h)  gsap.set(h,  { y: 30, opacity: 0 });
   ScrollTrigger.create({
@@ -240,6 +243,17 @@ if (statNum) {
 /* ════════════════════════════════════════════════════════════
    PROCESS STEPS
 ════════════════════════════════════════════════════════════ */
+const processIntro = document.querySelector('.process-intro');
+if (processIntro) {
+  gsap.fromTo(processIntro,
+    { y: 14, opacity: 0 },
+    {
+      y: 0, opacity: 1, duration: 0.5, ease: 'power3.out',
+      scrollTrigger: { trigger: '.process-header', start: 'top 82%', once: true },
+    }
+  );
+}
+
 document.querySelectorAll('.js-step').forEach((step, i) => {
   ScrollTrigger.create({
     trigger: step,
@@ -253,13 +267,24 @@ document.querySelectorAll('.js-step').forEach((step, i) => {
 /* ════════════════════════════════════════════════════════════
    CONTACT
 ════════════════════════════════════════════════════════════ */
-gsap.fromTo('.contact-block, .contact-map',
-  { y: 22, opacity: 0 },
+gsap.fromTo('.js-contact-card',
+  { y: 28, opacity: 0 },
   {
-    y: 0, opacity: 1, duration: 0.5, stagger: 0.09, ease: 'power3.out',
-    scrollTrigger: { trigger: '.contact-grid', start: 'top 80%', once: true },
+    y: 0, opacity: 1, duration: 0.55, stagger: 0.1, ease: 'power3.out',
+    scrollTrigger: { trigger: '.contact-layout', start: 'top 82%', once: true },
   }
 );
+
+const contactLead = document.querySelector('.contact-lead');
+if (contactLead) {
+  gsap.fromTo(contactLead,
+    { y: 16, opacity: 0 },
+    {
+      y: 0, opacity: 1, duration: 0.5, ease: 'power3.out',
+      scrollTrigger: { trigger: '.contact-header', start: 'top 85%', once: true },
+    }
+  );
+}
 
 
 /* ════════════════════════════════════════════════════════════
