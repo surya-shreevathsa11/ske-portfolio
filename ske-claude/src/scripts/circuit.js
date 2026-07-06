@@ -4,7 +4,8 @@ const WIRE_LEN = 1272; // branch wire pixel length (1380 - 108)
 
 export function initCircuit(onComplete) {
   const paths = [...document.querySelectorAll('.c-path')];
-  const sparks = [...document.querySelectorAll('.c-spark')];
+  const sparks = [...document.querySelectorAll('.c-spark:not(.c-spark-trail)')];
+  const trails = [...document.querySelectorAll('.c-spark-trail')];
   const circuit = document.getElementById('heroCircuit');
 
   if (!paths.length) return;
@@ -14,13 +15,13 @@ export function initCircuit(onComplete) {
     const len = el.getTotalLength ? el.getTotalLength() : 0;
     if (len > 0) gsap.set(el, { strokeDasharray: len, strokeDashoffset: len });
   });
-  gsap.set(sparks, { opacity: 0 });
+  gsap.set([...sparks, ...trails], { opacity: 0 });
 
   // ── Phase 1: Draw paths from left to right ─────────────
   const drawTl = gsap.timeline({
     onComplete: () => {
       surgePulse(circuit);
-      startSparks(sparks);
+      startSparks(sparks, trails);
       startBreathing(circuit);
       onComplete?.();
     },
@@ -28,39 +29,83 @@ export function initCircuit(onComplete) {
 
   drawTl.to(paths, {
     strokeDashoffset: 0,
-    duration: 0.5,
-    stagger: { amount: 1.6, from: 'start', ease: 'power1.in' },
-    ease: 'power2.out',
+    duration: 0.45,
+    stagger: { amount: 1.4, from: 'start', ease: 'power1.in' },
+    ease: 'power3.out',
   });
 }
 
-// ── Phase 2: Power surge — circuit briefly brightens ───────
+// ── Phase 2: Power surge — circuit brightens, loads flicker ─
 function surgePulse(circuit) {
-  gsap.timeline()
-    .to(circuit, { opacity: 0.42, duration: 0.12, ease: 'power4.in' })
-    .to(circuit, { opacity: 0.12, duration: 0.45, ease: 'power3.out' });
+  const loads = [...document.querySelectorAll('.hero-circuit circle.c-path:not(.c-contact)')];
+  const loadData = loads.map((el) => ({
+    el,
+    r: parseFloat(el.getAttribute('r') || '16'),
+    stroke: el.getAttribute('stroke') || '',
+  }));
+
+  circuit.classList.add('is-surging');
+
+  const tl = gsap.timeline({
+    onComplete: () => circuit.classList.remove('is-surging'),
+  });
+
+  tl.to(circuit, { opacity: 0.58, duration: 0.07, ease: 'power4.in' }, 0)
+    .to(circuit, { opacity: 0.12, duration: 0.65, ease: 'power3.out' }, 0.07);
+
+  loadData.forEach(({ el, r }, i) => {
+    tl.to(el, {
+      attr: { r: r * 1.45 },
+      stroke: '#E8A86A',
+      duration: 0.12,
+      ease: 'power2.out',
+    }, 0.02 + i * 0.025);
+    tl.to(el, {
+      attr: { r },
+      stroke: '#F0EBE0',
+      duration: 0.35,
+      ease: 'power3.out',
+    }, 0.18 + i * 0.02);
+  });
 }
 
-// ── Phase 3: Sparks travel along branch wires ──────────────
-function startSparks(sparks) {
-  const DASH   = 38;        // visible dash length in px
-  const GAP    = WIRE_LEN;  // total gap (≈ entire wire length)
-  const SPEEDS = [2.0, 2.6, 1.7]; // different speeds per branch
+// ── Phase 3: Sparks + trailing ghosts along branch wires ───
+function startSparks(sparks, trails) {
+  const DASH   = 52;
+  const GAP    = WIRE_LEN;
+  const SPEEDS = [1.6, 2.1, 1.4];
 
   sparks.forEach((spark, i) => {
     const total = DASH + GAP;
     gsap.set(spark, {
       strokeDasharray: `${DASH} ${GAP + DASH}`,
       strokeDashoffset: total,
-      stroke: '#B87C4C',
-      opacity: 0.9,
+      stroke: '#E8A86A',
+      opacity: 1,
     });
     gsap.to(spark, {
       strokeDashoffset: 0,
       duration: SPEEDS[i],
       ease: 'none',
       repeat: -1,
-      delay: i * 0.55 + 0.15,
+      delay: i * 0.4,
+    });
+  });
+
+  trails.forEach((trail, i) => {
+    const DASH_T = 22;
+    const total = DASH_T + GAP;
+    gsap.set(trail, {
+      strokeDasharray: `${DASH_T} ${GAP + DASH_T}`,
+      strokeDashoffset: total,
+      opacity: 0.45,
+    });
+    gsap.to(trail, {
+      strokeDashoffset: 0,
+      duration: SPEEDS[i] * 1.35,
+      ease: 'none',
+      repeat: -1,
+      delay: i * 0.4 + 0.35,
     });
   });
 }

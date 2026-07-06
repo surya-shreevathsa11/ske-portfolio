@@ -90,37 +90,283 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(
    Circuit draws first (~1.6s), then hero text animates in.
    Both run simultaneously — circuit draw is background action.
 ════════════════════════════════════════════════════════════ */
-function startHeroSequence() {
-  const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+const heroReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const heroEl = document.getElementById('hero');
 
-  // Beat 1 — top border line draws left → right
-  tl.to('#heroBorderTop', { width: '100%', duration: 0.7, ease: 'power2.inOut' });
-
-  // Beat 2 — label strip fades up
-  tl.to('#heroLabel', { y: 0, opacity: 1, duration: 0.45 }, '-=0.2');
-
-  // Beat 3 — headline lines rise from mask, staggered
-  tl.to('.lm-inner', {
-    y: 0,
-    duration: 0.85,
-    stagger: 0.11,
-  }, '-=0.15');
-
-  // Beat 4 — copper rule draws left → right
-  tl.to('#heroRule', { width: '100%', duration: 0.9, ease: 'power3.inOut' }, '-=0.3');
-
-  // Beat 5 — bottom strip rises
-  tl.to('#heroStrip', { y: 0, opacity: 1, duration: 0.55 }, '-=0.35');
-
-  // Beat 6 — scroll cue line starts its loop (CSS handles it, just show the element)
-  tl.to('#heroScroll', { opacity: 1, duration: 0.4 }, '-=0.2');
+function revealHeroStatic() {
+  gsap.set('#heroGlow', { xPercent: -50, yPercent: -50 });
+  gsap.set(['#heroBorderTop', '#heroRule'], { width: '100%' });
+  gsap.set(['#heroLabel', '#heroStrip', '#heroScroll', '#heroGlow'], { opacity: 1, y: 0, scale: 1, filter: 'none' });
+  gsap.set('.hero-headline .lm-inner', { y: 0, rotationX: 0, opacity: 1, filter: 'none' });
+  gsap.set('.hero-label-item, .hero-strip-desc, .hero-strip .btn-ghost', { opacity: 1, y: 0 });
+  document.querySelector('.hero-grid')?.classList.add('is-visible', 'is-revealed');
+  document.getElementById('heroRule')?.classList.add('is-live');
+  document.getElementById('heroBorderTop')?.classList.add('is-live');
+  document.getElementById('heroGlow')?.classList.add('is-active');
+  document.getElementById('heroHeadline')?.classList.add('is-revealed');
+  document.querySelector('.hero-period')?.classList.add('is-lit');
 }
 
-// Start circuit draw immediately, hero text starts after 0.2s delay
-initCircuit();
-gsap.delayedCall(0.2, startHeroSequence);
+function initHeroParticles() {
+  const container = document.getElementById('heroParticles');
+  if (!container || heroReducedMotion) return;
 
-// Hero circuit parallax on scroll
+  for (let i = 0; i < 32; i++) {
+    const p = document.createElement('span');
+    p.className = 'hero-particle';
+    container.appendChild(p);
+  }
+
+  const floatParticle = (p) => {
+    const x = gsap.utils.random(4, 96);
+    const size = gsap.utils.random(1.5, 3.5);
+    gsap.set(p, {
+      left: `${x}%`,
+      top: `${gsap.utils.random(72, 98)}%`,
+      width: size,
+      height: size,
+      opacity: gsap.utils.random(0.15, 0.65),
+      x: 0,
+      y: 0,
+    });
+    gsap.to(p, {
+      y: gsap.utils.random(-90, -200),
+      x: gsap.utils.random(-35, 35),
+      opacity: 0,
+      duration: gsap.utils.random(2.8, 6.5),
+      ease: 'power1.out',
+      onComplete: () => floatParticle(p),
+    });
+  };
+
+  gsap.utils.toArray('.hero-particle').forEach((p, i) => {
+    gsap.delayedCall(i * 0.08, () => floatParticle(p));
+  });
+}
+
+function initHeroMouseParallax() {
+  if (!heroEl || heroReducedMotion) return;
+
+  let raf = null;
+  heroEl.addEventListener('mousemove', (e) => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = null;
+      const rect = heroEl.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+      gsap.to('#heroGlow', {
+        x: x * 48,
+        y: y * 32,
+        duration: 1.1,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      });
+      gsap.to('#heroCircuit', {
+        x: x * -22,
+        y: y * -14,
+        duration: 1.3,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      });
+      gsap.to('#heroHeadline', {
+        x: x * 10,
+        y: y * 6,
+        rotationY: x * 2.5,
+        rotationX: y * -1.5,
+        duration: 1.2,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      });
+    });
+  });
+
+  heroEl.addEventListener('mouseleave', () => {
+    gsap.to(['#heroGlow', '#heroCircuit', '#heroHeadline'], {
+      x: 0,
+      y: 0,
+      rotationX: 0,
+      rotationY: 0,
+      duration: 1.4,
+      ease: 'power3.out',
+    });
+  });
+}
+
+function playHeroIntro() {
+  const flash = document.getElementById('heroFlash');
+  const scan = document.getElementById('heroScan');
+  const grid = document.querySelector('.hero-grid');
+
+  const intro = gsap.timeline();
+
+  // Beat 0 — power surge flash
+  intro.fromTo(flash,
+    { opacity: 0 },
+    { opacity: 1, duration: 0.06, ease: 'power4.in' },
+    0
+  );
+  intro.to(flash, { opacity: 0, duration: 0.55, ease: 'power3.out' }, 0.06);
+
+  // Beat 0b — electric scan sweeps top → bottom
+  intro.fromTo(scan,
+    { top: '0%', opacity: 0, scaleX: 0.4 },
+    { top: '0%', opacity: 1, scaleX: 1, duration: 0.08, ease: 'power2.out' },
+    0.02
+  );
+  intro.to(scan, {
+    top: '100%',
+    opacity: 0.85,
+    duration: 0.85,
+    ease: 'power2.inOut',
+  }, 0.1);
+  intro.to(scan, { opacity: 0, duration: 0.2 }, 0.95);
+
+  // Grid blooms in behind
+  intro.fromTo(grid,
+    { opacity: 0, scale: 1.06 },
+    { opacity: 1, scale: 1, duration: 1.6, ease: 'power2.out' },
+    0.15
+  );
+  intro.call(() => grid?.classList.add('is-visible', 'is-revealed'), null, 1.2);
+
+  return intro;
+}
+
+function startHeroSequence() {
+  if (heroReducedMotion) {
+    revealHeroStatic();
+    return;
+  }
+
+  initHeroParticles();
+
+  gsap.set('#heroGlow', { xPercent: -50, yPercent: -50, transformOrigin: '50% 50%' });
+  gsap.set('.hero-headline .lm-inner', {
+    filter: 'blur(18px)',
+    rotationX: -82,
+    transformOrigin: '50% 100%',
+    opacity: 0,
+  });
+  gsap.set('#heroHeadline', { transformPerspective: 900 });
+
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+  // Run cinematic intro in parallel
+  tl.add(playHeroIntro(), 0);
+
+  // Ambient glow erupts behind headline
+  tl.fromTo('#heroGlow',
+    { opacity: 0, scale: 0.75 },
+    { opacity: 1, scale: 1, duration: 1.6, ease: 'power3.out' },
+    0.08
+  );
+
+  // Top border draws with energy
+  tl.to('#heroBorderTop', {
+    width: '100%',
+    duration: 0.8,
+    ease: 'power2.inOut',
+    onComplete: () => document.getElementById('heroBorderTop')?.classList.add('is-live'),
+  }, 0.35);
+
+  // Label items cascade in
+  tl.to('#heroLabel', { opacity: 1, duration: 0.01 }, 0.55);
+  tl.fromTo('.hero-label-item',
+    { y: 18, opacity: 0, letterSpacing: '0.28em' },
+    { y: 0, opacity: 1, letterSpacing: '0.14em', duration: 0.5, stagger: 0.08, ease: 'power4.out' },
+    0.6
+  );
+
+  // Headline — dramatic 3D flip + blur resolve
+  tl.to('.hero-headline .lm-inner', {
+    y: 0,
+    rotationX: 0,
+    opacity: 1,
+    filter: 'blur(0px)',
+    duration: 1.05,
+    stagger: 0.14,
+    ease: 'power4.out',
+  }, 0.72);
+
+  // Headline lands — micro impact shake
+  tl.fromTo('#heroHeadline',
+    { scale: 1 },
+    { scale: 1.012, duration: 0.12, ease: 'power2.out', yoyo: true, repeat: 1 },
+    1.55
+  );
+
+  // Copper period detonates
+  tl.fromTo('.hero-period',
+    { scale: 1, rotation: 0 },
+    { scale: 1.6, rotation: -8, duration: 0.2, ease: 'power4.out' },
+    1.48
+  );
+  tl.to('.hero-period', {
+    scale: 1,
+    rotation: 0,
+    duration: 0.55,
+    ease: 'elastic.out(1, 0.45)',
+    onComplete: () => {
+      document.querySelector('.hero-period')?.classList.add('is-lit');
+      document.getElementById('heroHeadline')?.classList.add('is-revealed');
+    },
+  }, 1.68);
+
+  // Copper rule charges across
+  tl.to('#heroRule', {
+    width: '100%',
+    duration: 1.05,
+    ease: 'power4.inOut',
+    onComplete: () => document.getElementById('heroRule')?.classList.add('is-live'),
+  }, 1.15);
+
+  // Strip content rockets up
+  tl.to('#heroStrip', { y: 0, opacity: 1, duration: 0.01 }, 1.38);
+  tl.fromTo('.hero-strip-desc',
+    { y: 28, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.58, ease: 'power4.out' },
+    1.42
+  );
+  tl.fromTo('.hero-strip .btn-ghost',
+    { y: 24, opacity: 0, scale: 0.92 },
+    { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.6)' },
+    1.55
+  );
+
+  // Scroll cue materialises
+  tl.fromTo('#heroScroll',
+    { opacity: 0, y: 16 },
+    { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' },
+    1.72
+  );
+  tl.call(() => document.getElementById('heroGlow')?.classList.add('is-active'), null, 1.78);
+}
+
+// Circuit power-on syncs with hero flash + glow burst
+initCircuit(() => {
+  if (heroReducedMotion) return;
+  const flash = document.getElementById('heroFlash');
+  gsap.timeline()
+    .to(flash, { opacity: 0.7, duration: 0.05, ease: 'power4.in' }, 0)
+    .to(flash, { opacity: 0, duration: 0.4, ease: 'power3.out' }, 0.05);
+  gsap.fromTo('#heroGlow',
+    { scale: 1 },
+    { scale: 1.1, duration: 0.22, ease: 'power3.out', yoyo: true, repeat: 1 },
+  );
+});
+
+initHeroMouseParallax();
+gsap.delayedCall(0.15, startHeroSequence);
+
+// Hero scroll cue — smooth scroll to services
+document.getElementById('heroScroll')?.addEventListener('click', () => {
+  const services = document.getElementById('services');
+  if (services) lenis.scrollTo(services, { offset: navOffset(), duration: 1.4 });
+});
+
+// Hero parallax on scroll — circuit + glow drift at different rates
 gsap.to('#heroCircuit', {
   yPercent: 16,
   ease: 'none',
@@ -129,6 +375,18 @@ gsap.to('#heroCircuit', {
     start: 'top top',
     end: 'bottom top',
     scrub: 1.2,
+  },
+});
+
+gsap.to('#heroGlow', {
+  yPercent: -42,
+  scale: 1.05,
+  ease: 'none',
+  scrollTrigger: {
+    trigger: '#hero',
+    start: 'top top',
+    end: 'bottom top',
+    scrub: 1.5,
   },
 });
 
@@ -156,6 +414,10 @@ ScrollTrigger.create({
   start: 'top 72%',
   once: true,
   onEnter: () => {
+    const eyebrow = document.querySelector('.js-about-eyebrow');
+    if (eyebrow) {
+      gsap.to(eyebrow, { y: 0, opacity: 1, duration: 0.45, ease: 'power3.out' });
+    }
     gsap.to('.js-about-word', {
       y: 0,
       duration: 0.75,
@@ -164,6 +426,28 @@ ScrollTrigger.create({
     });
   },
 });
+
+gsap.fromTo('.js-about-body',
+  { y: 18, opacity: 0 },
+  {
+    y: 0, opacity: 1, duration: 0.55, stagger: 0.1, ease: 'power3.out',
+    scrollTrigger: { trigger: '.about-intro', start: 'top 74%', once: true },
+  }
+);
+
+const aboutImg = document.querySelector('.about-img-wrap img');
+if (aboutImg) {
+  gsap.to(aboutImg, {
+    yPercent: 6,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '.about-img-wrap',
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: 1.2,
+    },
+  });
+}
 
 ScrollTrigger.create({
   trigger: '.js-about-divider',
@@ -192,7 +476,7 @@ gsap.fromTo('.js-about-stat',
   { y: 24, opacity: 0 },
   {
     y: 0, opacity: 1, duration: 0.6, stagger: 0.14, ease: 'power3.out',
-    scrollTrigger: { trigger: '.about-right', start: 'top 76%', once: true },
+    scrollTrigger: { trigger: '.about-lower', start: 'top 76%', once: true },
   }
 );
 
