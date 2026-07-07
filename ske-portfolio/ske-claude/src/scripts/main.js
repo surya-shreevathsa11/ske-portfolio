@@ -466,9 +466,6 @@ ScrollTrigger.create({
   once: true,
   onEnter: () => {
     document.querySelector('.js-about-divider').classList.add('live');
-    document.querySelectorAll('.js-pillar').forEach((li, i) => {
-      setTimeout(() => li.classList.add('live'), 400 + i * 100);
-    });
   },
 });
 
@@ -482,12 +479,12 @@ ScrollTrigger.create({
   },
 });
 
-// Stat block entrance + count-up
-gsap.fromTo('.js-about-stat',
-  { y: 24, opacity: 0 },
+// Credentials + KEI entrance (translate only — text stays readable)
+gsap.fromTo('.js-about-stat, .js-pillar',
+  { y: 14 },
   {
-    y: 0, opacity: 1, duration: 0.6, stagger: 0.14, ease: 'power3.out',
-    scrollTrigger: { trigger: '.about-lower', start: 'top 76%', once: true },
+    y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out',
+    scrollTrigger: { trigger: '.about-lower', start: 'top 82%', once: true },
   }
 );
 
