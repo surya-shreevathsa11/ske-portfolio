@@ -1,3 +1,7 @@
+import { initConsent } from './consent.js';
+
+initConsent();
+
 /* Minimal nav + mobile menu for legal pages */
 
 const nav = document.getElementById('nav');

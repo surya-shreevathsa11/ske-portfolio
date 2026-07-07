@@ -2,7 +2,10 @@ import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initCircuit } from './circuit.js';
+import { initConsent } from './consent.js';
 import './motion-enhancements.js';
+
+initConsent();
 
 gsap.registerPlugin(ScrollTrigger);
 

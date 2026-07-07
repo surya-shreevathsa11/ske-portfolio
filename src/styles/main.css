@@ -1599,6 +1599,111 @@ button:focus-visible {
 
 
 /* ════════════════════════════════════════════════
+   CONSENT POPUP
+════════════════════════════════════════════════ */
+body.consent-locked { overflow: hidden; }
+
+.consent-modal,
+.consent-blocker {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px var(--pad);
+  background: rgba(9, 19, 32, 0.82);
+  backdrop-filter: blur(6px);
+}
+
+.consent-modal[hidden],
+.consent-blocker[hidden] {
+  display: none;
+}
+
+.consent-modal-panel,
+.consent-blocker-panel {
+  width: min(100%, 480px);
+  padding: clamp(28px, 5vw, 40px);
+  background: var(--deep-navy);
+  border: 1px solid var(--border-dark);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.consent-title {
+  margin-top: 14px;
+  font-family: var(--f-display);
+  font-size: clamp(24px, 4vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--ivory);
+}
+
+.consent-desc {
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(240, 235, 224, 0.62);
+}
+
+.consent-desc a {
+  color: var(--copper);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s;
+}
+
+.consent-desc a:hover { opacity: 0.8; }
+
+.consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.consent-btn {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  min-height: 44px;
+  padding: 13px 22px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.22s, color 0.22s, border-color 0.22s, transform 0.22s var(--ease-out);
+}
+
+.consent-btn-accept {
+  color: var(--deep-navy);
+  background: var(--copper);
+}
+
+.consent-btn-accept:hover {
+  background: var(--ivory);
+  transform: translateY(-1px);
+}
+
+.consent-btn-decline {
+  color: rgba(240, 235, 224, 0.55);
+  background: transparent;
+  border-color: rgba(240, 235, 224, 0.14);
+}
+
+.consent-btn-decline:hover {
+  color: var(--ivory);
+  border-color: rgba(240, 235, 224, 0.35);
+}
+
+.consent-btn:focus-visible {
+  outline: 2px solid var(--copper);
+  outline-offset: 3px;
+}
+
+
+/* ════════════════════════════════════════════════
    FLOATING WHATSAPP
 ════════════════════════════════════════════════ */
 .whatsapp-float {
