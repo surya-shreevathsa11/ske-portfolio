@@ -67,11 +67,11 @@
         </defs>
 
         <!-- INCOMING MAINS -->
-        <line class="c-path" x1="-10" y1="430" x2="32" y2="430"/>
+        <line class="c-path c-mains" x1="-10" y1="430" x2="32" y2="430"/>
 
         <!-- DISTRIBUTION BOARD -->
         <rect class="c-path" x="32" y="150" width="56" height="540"/>
-        <line class="c-path" x1="60" y1="162" x2="60" y2="678"/>
+        <line class="c-path c-feeder" x1="60" y1="162" x2="60" y2="678"/>
         <line class="c-path" x1="60" y1="330" x2="86" y2="330"/>
         <line class="c-path" x1="60" y1="530" x2="86" y2="530"/>
         <!-- Earth -->
@@ -84,26 +84,26 @@
         <!-- BRANCH 1 · LIGHTING (y = 200) -->
         <line class="c-path" x1="60" y1="200" x2="88" y2="200"/>
         <rect class="c-path" x="88" y="193" width="20" height="14"/>
-        <line class="c-path" x1="108" y1="200" x2="1380" y2="200"/>
+        <line class="c-path c-branch" x1="108" y1="200" x2="1380" y2="200"/>
         <!-- Switch SW-1 -->
         <circle class="c-path c-contact" cx="285" cy="200" r="5"/>
         <circle class="c-path c-contact" cx="299" cy="200" r="5"/>
         <!-- Lamp L-1 -->
-        <circle class="c-path" cx="490" cy="200" r="16"/>
+        <circle class="c-path c-load" cx="490" cy="200" r="16"/>
         <line class="c-path" x1="479" y1="189" x2="501" y2="211"/>
         <line class="c-path" x1="501" y1="189" x2="479" y2="211"/>
         <!-- Switch SW-2 -->
         <circle class="c-path c-contact" cx="685" cy="200" r="5"/>
         <circle class="c-path c-contact" cx="699" cy="200" r="5"/>
         <!-- Lamp L-2 -->
-        <circle class="c-path" cx="890" cy="200" r="16"/>
+        <circle class="c-path c-load" cx="890" cy="200" r="16"/>
         <line class="c-path" x1="879" y1="189" x2="901" y2="211"/>
         <line class="c-path" x1="901" y1="189" x2="879" y2="211"/>
         <!-- Switch SW-3 -->
         <circle class="c-path c-contact" cx="1090" cy="200" r="5"/>
         <circle class="c-path c-contact" cx="1104" cy="200" r="5"/>
         <!-- Lamp L-3 -->
-        <circle class="c-path" cx="1270" cy="200" r="16"/>
+        <circle class="c-path c-load" cx="1270" cy="200" r="16"/>
         <line class="c-path" x1="1259" y1="189" x2="1281" y2="211"/>
         <line class="c-path" x1="1281" y1="189" x2="1259" y2="211"/>
         <!-- Earth -->
@@ -116,23 +116,23 @@
         <!-- BRANCH 2 · POWER SOCKETS (y = 430) -->
         <line class="c-path" x1="60" y1="430" x2="88" y2="430"/>
         <rect class="c-path" x="88" y="423" width="20" height="14"/>
-        <line class="c-path" x1="108" y1="430" x2="1380" y2="430"/>
+        <line class="c-path c-branch" x1="108" y1="430" x2="1380" y2="430"/>
         <!-- Switch -->
         <circle class="c-path c-contact" cx="285" cy="430" r="5"/>
         <circle class="c-path c-contact" cx="299" cy="430" r="5"/>
         <!-- Socket P-1 -->
-        <circle class="c-path" cx="480" cy="430" r="16"/>
+        <circle class="c-path c-load" cx="480" cy="430" r="16"/>
         <line class="c-path" x1="475" y1="422" x2="475" y2="432"/>
         <line class="c-path" x1="485" y1="422" x2="485" y2="432"/>
         <!-- Switch -->
         <circle class="c-path c-contact" cx="670" cy="430" r="5"/>
         <circle class="c-path c-contact" cx="684" cy="430" r="5"/>
         <!-- Socket P-2 -->
-        <circle class="c-path" cx="870" cy="430" r="16"/>
+        <circle class="c-path c-load" cx="870" cy="430" r="16"/>
         <line class="c-path" x1="865" y1="422" x2="865" y2="432"/>
         <line class="c-path" x1="875" y1="422" x2="875" y2="432"/>
         <!-- Socket P-3 -->
-        <circle class="c-path" cx="1080" cy="430" r="16"/>
+        <circle class="c-path c-load" cx="1080" cy="430" r="16"/>
         <line class="c-path" x1="1075" y1="422" x2="1075" y2="432"/>
         <line class="c-path" x1="1085" y1="422" x2="1085" y2="432"/>
         <!-- Switch -->
@@ -148,27 +148,27 @@
         <!-- BRANCH 3 · GENERAL (y = 660) -->
         <line class="c-path" x1="60" y1="660" x2="88" y2="660"/>
         <rect class="c-path" x="88" y="653" width="20" height="14"/>
-        <line class="c-path" x1="108" y1="660" x2="1380" y2="660"/>
+        <line class="c-path c-branch" x1="108" y1="660" x2="1380" y2="660"/>
         <!-- Lamp L-4 -->
-        <circle class="c-path" cx="310" cy="660" r="16"/>
+        <circle class="c-path c-load" cx="310" cy="660" r="16"/>
         <line class="c-path" x1="299" y1="649" x2="321" y2="671"/>
         <line class="c-path" x1="321" y1="649" x2="299" y2="671"/>
         <!-- Switch -->
         <circle class="c-path c-contact" cx="500" cy="660" r="5"/>
         <circle class="c-path c-contact" cx="514" cy="660" r="5"/>
         <!-- Socket P-4 -->
-        <circle class="c-path" cx="710" cy="660" r="16"/>
+        <circle class="c-path c-load" cx="710" cy="660" r="16"/>
         <line class="c-path" x1="705" y1="652" x2="705" y2="662"/>
         <line class="c-path" x1="715" y1="652" x2="715" y2="662"/>
         <!-- Lamp L-5 -->
-        <circle class="c-path" cx="930" cy="660" r="16"/>
+        <circle class="c-path c-load" cx="930" cy="660" r="16"/>
         <line class="c-path" x1="919" y1="649" x2="941" y2="671"/>
         <line class="c-path" x1="941" y1="649" x2="919" y2="671"/>
         <!-- Switch -->
         <circle class="c-path c-contact" cx="1120" cy="660" r="5"/>
         <circle class="c-path c-contact" cx="1134" cy="660" r="5"/>
         <!-- Socket P-5 -->
-        <circle class="c-path" cx="1290" cy="660" r="16"/>
+        <circle class="c-path c-load" cx="1290" cy="660" r="16"/>
         <line class="c-path" x1="1285" y1="652" x2="1285" y2="662"/>
         <line class="c-path" x1="1295" y1="652" x2="1295" y2="662"/>
         <!-- Earth -->

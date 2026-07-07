@@ -251,7 +251,8 @@ button:focus-visible {
 .hero-circuit {
   position: absolute; inset: 0;
   z-index: 0; pointer-events: none;
-  opacity: 0.12;
+  opacity: 0.16;
+  will-change: opacity;
 }
 .hero-circuit svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 
@@ -264,30 +265,34 @@ button:focus-visible {
 }
 .c-contact {
   stroke-width: 0.7;
+  opacity: 0.55;
+}
+.c-branch {
+  stroke: rgba(240, 235, 224, 0.7);
+}
+.c-feeder,
+.c-mains {
+  stroke: rgba(240, 235, 224, 0.85);
+}
+.c-load {
+  stroke: var(--ivory);
+  fill: none;
 }
 .c-spark {
-  stroke: #B87C4C;
-  stroke-width: 1.5;
-  stroke-linecap: butt;
+  stroke: #E8A86A;
+  stroke-width: 2;
+  stroke-linecap: round;
   fill: none;
   opacity: 0;
 }
 .c-spark-trail {
-  stroke-width: 1;
-  stroke: rgba(240, 200, 160, 0.55);
+  stroke-width: 1.2;
+  stroke: rgba(232, 168, 106, 0.45);
   filter: url(#sparkGlow);
 }
 
-/* Ambient pulse after draw completes */
-@keyframes circuit-breathe {
-  0%, 100% { opacity: 0.12; }
-  50%       { opacity: 0.26; }
-}
-.hero-circuit.is-breathing {
-  animation: circuit-breathe 3.5s ease-in-out infinite;
-}
 .hero-circuit.is-surging {
-  filter: drop-shadow(0 0 24px rgba(184,124,76,0.35));
+  filter: drop-shadow(0 0 20px rgba(184,124,76,0.3));
 }
 
 /* ── Power-on flash ── */
@@ -1680,7 +1685,7 @@ button:focus-visible {
 
 /* ─── Reduced motion ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track, .hsc-inner, .hero-circuit, .hero-glow.is-active, .hero-period.is-lit,
+  .marquee-track, .hsc-inner, .hero-glow.is-active, .hero-period.is-lit,
   .hero-grid.is-revealed, .hero-rule.is-live { animation: none; }
   .lm-inner { transform: none; filter: none !important; }
   .hero-label, .hero-strip, .hero-scroll-cue { transform: none; opacity: 1; }
@@ -1689,7 +1694,6 @@ button:focus-visible {
   .hero-glow, .hero-grid { opacity: 1; }
   .hero-rule.is-live, .hero-border-top.is-live { box-shadow: none; }
   .hero-flash, .hero-scan, .hero-particles { display: none; }
-  .hero-circuit.is-surging { filter: none; }
   .js-about-eyebrow { opacity: 1; transform: none; }
   .about-img-wrap img { transform: none !important; }
 }
