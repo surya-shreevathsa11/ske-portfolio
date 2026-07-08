@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+
 Sitemap: https://srikaverielectricals.com/sitemap.xml

@@ -1,0 +1,18 @@
+{
+  "name": "Sri Kaveri Electricals",
+  "short_name": "SKE",
+  "description": "Sri Kaveri Electricals is an electrical supply store and services firm in Bengaluru, Karnataka, India.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#091320",
+  "theme_color": "#091320",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

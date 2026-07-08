@@ -1,0 +1,81 @@
+{
+  "name": "Sri Kaveri Electricals",
+  "legalName": "Sri Kaveri Electricals",
+  "url": "https://srikaverielectricals.com/",
+  "domain": "srikaverielectricals.com",
+  "businessType": "Electrical Supply Store",
+  "industry": [
+    "Electrical Equipment",
+    "Industrial Electricals",
+    "Wiring Accessories",
+    "Switchgear",
+    "Lighting",
+    "Cables",
+    "Electrical Components"
+  ],
+  "telephone": {
+    "display": "+91 9483611360",
+    "e164": "+919483611360",
+    "telHref": "tel:+919483611360",
+    "whatsAppNumber": "919483611360",
+    "whatsAppBaseUrl": "https://wa.me/919483611360"
+  },
+  "email": "admin@srikaverielectricals.com",
+  "address": {
+    "streetAddress": "Near Bank of Baroda, Huchappa Layout, Govindaraja Nagar Ward, Amarajyothi Nagar, Vijayanagar",
+    "addressLocality": "Bengaluru",
+    "addressRegion": "Karnataka",
+    "postalCode": "560040",
+    "addressCountry": "IN"
+  },
+  "geo": {
+    "latitude": 12.9717661,
+    "longitude": 77.5282615
+  },
+  "hasMap": "https://www.google.com/maps/place/Sri+Kaveri+Electricals",
+  "openingHours": [
+    { "dayOfWeek": "Monday", "opens": "09:00", "closes": "19:00" },
+    { "dayOfWeek": "Tuesday", "opens": "09:00", "closes": "19:00" },
+    { "dayOfWeek": "Wednesday", "opens": "09:00", "closes": "19:00" },
+    { "dayOfWeek": "Thursday", "opens": "09:00", "closes": "19:00" },
+    { "dayOfWeek": "Friday", "opens": "09:00", "closes": "19:00" },
+    { "dayOfWeek": "Saturday", "opens": "09:00", "closes": "19:00" }
+  ],
+  "serviceArea": {
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "country": "India"
+  },
+  "productsCatalog": {
+    "name": "Electrical Products & Supplies",
+    "categories": [
+      "Cables & Wires",
+      "Switchgear",
+      "Wiring Accessories",
+      "Lighting",
+      "Industrial Electricals",
+      "Electrical Components"
+    ]
+  },
+  "services": [
+    {
+      "name": "Electrical Design",
+      "description": "Complete, standards-compliant electrical layouts for residential and commercial buildings, from initial load calculations to full circuit schematics and panel schedules."
+    },
+    {
+      "name": "Design & Implementation",
+      "description": "End-to-end design and execution of the electrical system, from approved plans to fitted sockets, switches, and breakers, including testing and commissioning."
+    },
+    {
+      "name": "Third-Party Implementation",
+      "description": "Implementation from approved drawings provided by a qualified designer, executed precisely to specification with on-site documentation."
+    }
+  ],
+  "brand": {
+    "themeColor": "#091320",
+    "logoSvgPath": "/img/ske_logo.svg",
+    "faviconSvgPath": "/favicon.svg",
+    "faviconPngPath": "/favicon.png",
+    "ogImagePath": "/img/og-image.jpg"
+  }
+}

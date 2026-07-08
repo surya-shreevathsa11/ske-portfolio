@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Sri Kaveri Electricals social preview">
+  <rect width="1200" height="630" fill="#091320"/>
+
+  <!-- Logo badge -->
+  <g transform="translate(0,0)">
+    <circle cx="600" cy="260" r="165" fill="#ffffff" opacity="1"/>
+    <image
+      href="ske_logo.svg"
+      x="455"
+      y="115"
+      width="290"
+      height="290"
+      preserveAspectRatio="xMidYMid meet"
+    />
+  </g>
+
+  <!-- Text -->
+  <g fill="#ffffff" text-anchor="middle">
+    <text x="600" y="490" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="44" font-weight="700" letter-spacing="0.4">
+      Sri Kaveri Electricals
+    </text>
+    <text x="600" y="540" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="28" font-weight="500" opacity="0.92">
+      Electrical Supply Store " Bengaluru
+    </text>
+  </g>
+</svg>
