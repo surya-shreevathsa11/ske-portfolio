@@ -204,6 +204,13 @@ button:focus-visible {
   backdrop-filter: blur(8px);
   border-bottom-color: var(--border-dark);
 }
+/* Keep the hamburger backing in sync with the scrolled nav bar so the
+   ivory bars stay visible over light sections (About, Services, etc.) */
+.nav.scrolled .nav-hamburger {
+  background: rgba(9,19,32,0.96);
+  backdrop-filter: blur(8px);
+  border-bottom-color: var(--border-dark);
+}
 
 .nav-links { display: flex; align-items: center; gap: 32px; }
 .nav-link {
@@ -247,55 +254,149 @@ button:focus-visible {
   width: 52px; height: 76px;
   background: none; border: none; cursor: pointer;
   align-items: center; justify-content: center; flex-shrink: 0;
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s ease, border-color 0.4s ease;
 }
-.nav-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--ivory); }
+.nav-hamburger span {
+  display: block; width: 22px; height: 1.5px; background: var(--ivory);
+  box-shadow: 0 0 3px rgba(9,19,32,0.55);
+}
 
 
 /* ─── Mobile menu ────────────────────────────────────────── */
 .mobile-menu {
   position: fixed; inset: 0; z-index: 200;
-  background: var(--deep-navy);
-  display: flex; flex-direction: column; justify-content: center;
-  padding: 64px var(--pad);
+  background:
+    radial-gradient(130% 80% at 100% 0%, rgba(184,124,76,0.14) 0%, transparent 46%),
+    radial-gradient(100% 70% at 0% 100%, rgba(13,27,42,0.7) 0%, transparent 55%),
+    var(--deep-navy);
+  display: flex; flex-direction: column;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 20px)
+    var(--pad)
+    calc(env(safe-area-inset-bottom, 0px) + 26px);
   opacity: 0; pointer-events: none;
-  transition: opacity 0.3s ease;
+  transform: translateY(-10px);
+  transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
-.mobile-menu.open { opacity: 1; pointer-events: all; }
+.mobile-menu.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+/* Faint engineering grid, fading toward the copper corner glow */
+.mobile-menu-glow {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg,  transparent, transparent 47px, rgba(240,235,224,0.02) 47px, rgba(240,235,224,0.02) 48px),
+    repeating-linear-gradient(90deg, transparent, transparent 47px, rgba(240,235,224,0.014) 47px, rgba(240,235,224,0.014) 48px);
+  -webkit-mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 68%);
+  mask-image: radial-gradient(circle at 100% 0%, #000 0%, transparent 68%);
+}
+
+/* Header: brand + close */
+.mobile-menu-head {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(240,235,224,0.08);
+}
+.mobile-brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark--mobile { width: 40px; height: 40px; }
+.mobile-brand-name {
+  display: flex; flex-direction: column; line-height: 1.05;
+  font-family: var(--f-display); font-weight: 700; font-size: 15px;
+  letter-spacing: 0.01em; color: var(--ivory);
+}
+.mobile-brand-name span {
+  font-family: var(--f-mono); font-weight: 400; font-size: 8.5px;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--copper); opacity: 0.85; margin-top: 4px;
+}
 .mobile-close {
-  position: absolute; top: 20px; right: var(--pad);
-  width: 44px; height: 44px; background: none; border: none; cursor: pointer;
+  position: relative; flex-shrink: 0;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: none; border: 1px solid rgba(240,235,224,0.14); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.25s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mobile-close:hover, .mobile-close:active {
+  border-color: var(--copper); transform: rotate(90deg);
 }
 .mobile-close span {
-  position: absolute; width: 22px; height: 1.5px; background: var(--ivory);
+  position: absolute; width: 18px; height: 1.5px; background: var(--ivory);
 }
 .mobile-close span:first-child { transform: rotate(45deg); }
 .mobile-close span:last-child  { transform: rotate(-45deg); }
-.mobile-links { display: flex; flex-direction: column; gap: 4px; margin-bottom: 44px; }
+
+/* Nav links: numbered, full-bleed rows */
+.mobile-nav {
+  position: relative; z-index: 1;
+  flex: 1; display: flex; align-items: center;
+  padding: 8px 0;
+}
+.mobile-links { display: flex; flex-direction: column; width: 100%; }
+.mobile-links li { border-bottom: 1px solid rgba(240,235,224,0.06); }
+.mobile-links li:first-child { border-top: 1px solid rgba(240,235,224,0.06); }
 .mobile-link {
+  display: flex; align-items: center; gap: 18px;
+  padding: clamp(12px, 2.7vh, 20px) 2px;
   font-family: var(--f-display);
-  font-size: clamp(30px, 8vw, 52px);
-  font-weight: 700; letter-spacing: -0.025em;
-  color: var(--ivory); opacity: 0.35; transition: opacity 0.2s;
-  display: flex;
-  align-items: center;
-  padding: 6px 0;
+  font-size: clamp(30px, 9vw, 46px);
+  font-weight: 700; letter-spacing: -0.03em;
+  color: var(--ivory);
   min-height: 44px;
+  transition: color 0.25s ease, padding-left 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.mobile-link:hover { opacity: 1; }
+.mobile-link-text { flex: 1; }
+.mobile-link-arrow {
+  font-size: 22px; color: var(--copper);
+  opacity: 0.2; transform: translateX(-6px);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mobile-link:hover, .mobile-link:active {
+  padding-left: 12px;
+}
+.mobile-link:hover .mobile-link-arrow, .mobile-link:active .mobile-link-arrow {
+  opacity: 1; transform: translateX(0);
+}
+
+/* Footer: primary actions + contact meta */
+.mobile-menu-foot {
+  position: relative; z-index: 1;
+  padding-top: 22px;
+  border-top: 1px solid rgba(240,235,224,0.08);
+  display: flex; flex-direction: column; gap: 18px;
+}
+.mobile-actions { display: flex; flex-direction: column; gap: 12px; }
 .mobile-cta-link {
-  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--copper);
-  display: inline-flex; align-items: center;
-  min-height: 44px; padding: 8px 0;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: var(--f-mono); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--deep-navy); background: var(--copper);
+  padding: 16px; min-height: 54px; border-radius: 3px;
+  transition: background 0.25s ease, transform 0.2s ease;
 }
+.mobile-cta-link:hover, .mobile-cta-link:active { background: var(--ivory); }
 .mobile-wa-link {
-  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em;
-  text-transform: uppercase; color: #25D366;
-  display: inline-flex; align-items: center;
-  min-height: 44px; padding: 8px 0;
-  margin-top: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: var(--f-mono); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #25D366; background: rgba(37,211,102,0.08);
+  border: 1px solid rgba(37,211,102,0.32);
+  padding: 15px; min-height: 54px; border-radius: 3px;
+  transition: background 0.25s ease, border-color 0.25s ease;
 }
+.mobile-wa-link:hover, .mobile-wa-link:active {
+  background: rgba(37,211,102,0.16); border-color: rgba(37,211,102,0.55);
+}
+.mobile-wa-link svg { width: 18px; height: 18px; flex-shrink: 0; }
+.mobile-menu-meta {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(240,235,224,0.32);
+}
+.mobile-menu-meta a { color: rgba(240,235,224,0.32); transition: color 0.2s ease; }
+.mobile-menu-meta a:hover { color: var(--copper); }
 
 
 /* ════════════════════════════════════════════════
@@ -1850,7 +1951,9 @@ body.consent-locked { overflow: hidden; }
   .nav-hamburger { display: flex; }
   .nav-logo { padding: 0 44px 0 var(--pad); }
   .brand-mark--nav { width: 38px; height: 38px; }
-  .nav-hamburger { width: 48px; height: var(--nav-h); }
+  /* Always-dark backing (mirrors the left logo slab) so the ivory bars
+     stay visible over cream sections regardless of scroll position */
+  .nav-hamburger { width: 48px; height: var(--nav-h); background: var(--deep-navy); }
 
   .hero-inner { min-height: 100vh; min-height: 100svh; }
   .hero-border-top { margin-top: calc(var(--nav-h) + 12px); }
