@@ -16,25 +16,15 @@ function setConsent(value) {
   }
 }
 
-function lockScroll() {
-  document.body.classList.add('consent-locked');
-}
-
-function unlockScroll() {
-  document.body.classList.remove('consent-locked');
-}
-
 function createConsentUI() {
   const root = document.createElement('div');
   root.id = 'consentRoot';
   root.innerHTML = `
-    <div class="consent-modal" id="consentModal" role="dialog" aria-modal="true" aria-labelledby="consentTitle" aria-describedby="consentDesc" hidden>
-      <div class="consent-modal-panel">
-        <span class="eyebrow eyebrow-light">Before you continue</span>
-        <h2 class="consent-title" id="consentTitle">Terms &amp; Privacy</h2>
-        <p class="consent-desc" id="consentDesc">
-          We use this website to share our services and help you get in touch. By continuing, you agree to our
-          <a href="/terms" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
+    <section class="consent-banner" id="consentBanner" aria-label="Terms and privacy notice" hidden>
+      <div class="consent-banner-inner">
+        <p class="consent-banner-text">
+          By using this website, you agree to our
+          <a href="/terms" target="_blank" rel="noopener noreferrer">Terms</a>
           and
           <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
         </p>
@@ -43,86 +33,47 @@ function createConsentUI() {
           <button type="button" class="consent-btn consent-btn-decline" id="consentDecline">Decline</button>
         </div>
       </div>
-    </div>
-
-    <div class="consent-blocker" id="consentBlocker" role="dialog" aria-modal="true" aria-labelledby="consentBlockerTitle" hidden>
-      <div class="consent-blocker-panel">
-        <span class="eyebrow eyebrow-light">Access restricted</span>
-        <h2 class="consent-title" id="consentBlockerTitle">You declined our terms</h2>
-        <p class="consent-desc">
-          You chose not to accept our
-          <a href="/terms" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
-          and
-          <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
-          To use this website, please accept them or leave the site.
-        </p>
-        <div class="consent-actions">
-          <button type="button" class="consent-btn consent-btn-accept" id="consentReaccept">Accept &amp; Continue</button>
-        </div>
-      </div>
-    </div>
+    </section>
   `;
 
   document.body.appendChild(root);
 
-  const modal = document.getElementById('consentModal');
-  const blocker = document.getElementById('consentBlocker');
+  const banner = document.getElementById('consentBanner');
   const acceptBtn = document.getElementById('consentAccept');
   const declineBtn = document.getElementById('consentDecline');
-  const reacceptBtn = document.getElementById('consentReaccept');
 
-  const showModal = () => {
-    modal.hidden = false;
-    blocker.hidden = true;
-    lockScroll();
-    acceptBtn.focus();
+  const show = () => {
+    banner.hidden = false;
   };
 
-  const showBlocker = () => {
-    modal.hidden = true;
-    blocker.hidden = false;
-    lockScroll();
-    reacceptBtn.focus();
-  };
-
-  const hideAll = () => {
-    modal.hidden = true;
-    blocker.hidden = true;
-    unlockScroll();
+  const hide = () => {
+    banner.hidden = true;
   };
 
   const accept = () => {
     setConsent('accepted');
-    hideAll();
+    hide();
   };
 
   const decline = () => {
     setConsent('declined');
-    showBlocker();
+    hide();
   };
 
   acceptBtn.addEventListener('click', accept);
-  reacceptBtn.addEventListener('click', accept);
   declineBtn.addEventListener('click', decline);
 
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !modal.hidden) {
-      decline();
-    }
-  });
-
-  return { showModal, showBlocker, hideAll };
+  return { show, hide };
 }
 
 export function initConsent() {
   const status = getConsent();
-  if (status === 'accepted') return;
+  if (status === 'accepted' || status === 'declined') return;
 
   const ui = createConsentUI();
-
-  if (status === 'declined') {
-    ui.showBlocker();
-  } else {
-    ui.showModal();
-  }
+  window.setTimeout(() => {
+    const latest = getConsent();
+    if (latest === 'accepted' || latest === 'declined') return;
+    ui.show();
+  }, 3000);
 }
