@@ -88,6 +88,184 @@ menuClose.addEventListener('click', closeMenu);
 document.querySelectorAll('.mobile-link, .mobile-cta-link, .mobile-wa-link').forEach((l) => l.addEventListener('click', closeMenu));
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
 
+/* ════════════════════════════════════════════════════════════
+   KEI SECTION — gallery, inline video, lightbox
+════════════════════════════════════════════════════════════ */
+(() => {
+  const root = document.getElementById('kei');
+  if (!root) return;
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const tabGallery = document.getElementById('keiTabGallery');
+  const tabVideo = document.getElementById('keiTabVideo');
+  const panelGallery = document.getElementById('keiGallery');
+  const panelVideo = document.getElementById('keiVideoPanel');
+
+  const stageImg = root.querySelector('.kei-stage-img');
+  const thumbs = [...root.querySelectorAll('.kei-thumb')];
+
+  const lightbox = document.getElementById('keiLightbox');
+  const lightboxImg = document.getElementById('keiLightboxImg');
+
+  const videoWrap = document.getElementById('keiVideoWrap');
+  const videoEl = document.getElementById('keiVideoEl');
+  const videoPlay = document.getElementById('keiVideoPlay');
+  const videoMute = document.getElementById('keiVideoMute');
+
+  if (!stageImg || !lightbox || !lightboxImg) return;
+
+  // Scroll reveal (KEI section only)
+  if (!reduced) {
+    gsap.fromTo('.js-kei-reveal',
+      { y: 22, opacity: 0 },
+      {
+        y: 0, opacity: 1, duration: 0.65, stagger: 0.1, ease: 'power3.out',
+        scrollTrigger: { trigger: '#kei', start: 'top 80%', once: true },
+      }
+    );
+    gsap.fromTo('.kei-divider',
+      { scaleX: 0 },
+      { scaleX: 1, duration: 0.9, ease: 'power3.inOut', scrollTrigger: { trigger: '#kei', start: 'top 80%', once: true } }
+    );
+  }
+
+  const openLightbox = (src) => {
+    lightboxImg.src = src;
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  };
+
+  lightbox.querySelectorAll('[data-kei-close]').forEach((el) => el.addEventListener('click', closeLightbox));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+  });
+
+  // Thumbs -> stage
+  const applyStageFit = (fit) => {
+    stageImg.classList.toggle('is-fill', fit === 'cover');
+  };
+
+  thumbs.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const src = btn.getAttribute('data-kei-src');
+      if (!src) return;
+      stageImg.src = src;
+      applyStageFit(btn.getAttribute('data-kei-fit') || 'contain');
+      thumbs.forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+    });
+  });
+
+  applyStageFit('contain');
+
+  stageImg.addEventListener('click', () => openLightbox(stageImg.currentSrc || stageImg.src));
+
+  // Inline video controls
+  const setPlaying = (playing) => {
+    videoWrap?.classList.toggle('is-playing', playing);
+    if (videoPlay) videoPlay.setAttribute('aria-label', playing ? 'Pause video' : 'Play video');
+  };
+
+  const pauseVideo = () => {
+    videoEl?.pause();
+    setPlaying(false);
+  };
+
+  const togglePlay = () => {
+    if (!videoEl) return;
+    if (videoEl.paused) {
+      videoEl.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    } else {
+      pauseVideo();
+    }
+  };
+
+  videoPlay?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    togglePlay();
+  });
+
+  videoEl?.addEventListener('click', togglePlay);
+  videoEl?.addEventListener('ended', () => setPlaying(false));
+  videoEl?.addEventListener('pause', () => {
+    if (videoEl.paused) setPlaying(false);
+  });
+
+  // Mute / unmute
+  const syncMuteUI = () => {
+    if (!videoEl || !videoMute) return;
+    const isMuted = videoEl.muted;
+    videoMute.classList.toggle('is-unmuted', !isMuted);
+    videoMute.setAttribute('aria-label', isMuted ? 'Unmute video' : 'Mute video');
+    videoMute.setAttribute('aria-pressed', String(isMuted));
+  };
+
+  videoMute?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!videoEl) return;
+    videoEl.muted = !videoEl.muted;
+    syncMuteUI();
+  });
+
+  if (videoEl) {
+    videoEl.muted = true;
+    syncMuteUI();
+  }
+
+  // Supply highlights (left column)
+  const highlightBtns = [...root.querySelectorAll('.kei-highlight')];
+  const highlightPanel = document.getElementById('keiHighlightPanel');
+
+  highlightBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const detail = btn.getAttribute('data-kei-detail');
+      if (!detail || !highlightPanel) return;
+      highlightBtns.forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      highlightPanel.textContent = detail;
+      highlightPanel.classList.add('is-updated');
+      window.setTimeout(() => highlightPanel.classList.remove('is-updated'), 400);
+    });
+  });
+
+  // Pause video when scrolled out of view
+  if (videoEl && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) pauseVideo();
+      });
+    }, { threshold: 0.25 });
+    io.observe(videoEl);
+  }
+
+  // Tabs
+  const activateTab = (which) => {
+    const isGallery = which === 'gallery';
+    tabGallery?.classList.toggle('is-active', isGallery);
+    tabVideo?.classList.toggle('is-active', !isGallery);
+    tabGallery?.setAttribute('aria-selected', String(isGallery));
+    tabVideo?.setAttribute('aria-selected', String(!isGallery));
+
+    panelGallery?.classList.toggle('is-active', isGallery);
+    panelVideo?.classList.toggle('is-active', !isGallery);
+    if (panelVideo) panelVideo.hidden = isGallery;
+    if (panelGallery) panelGallery.hidden = !isGallery;
+
+    if (isGallery) pauseVideo();
+  };
+
+  tabGallery?.addEventListener('click', () => activateTab('gallery'));
+  tabVideo?.addEventListener('click', () => activateTab('video'));
+})();
+
 
 /* ════════════════════════════════════════════════════════════
    CIRCUIT + HERO SEQUENCE
