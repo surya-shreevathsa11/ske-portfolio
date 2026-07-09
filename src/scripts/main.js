@@ -89,7 +89,7 @@ document.querySelectorAll('.mobile-link, .mobile-cta-link, .mobile-wa-link').for
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
 
 /* ════════════════════════════════════════════════════════════
-   KEI SECTION — gallery, inline video, lightbox
+   KEI SECTION: gallery, inline video, lightbox
 ════════════════════════════════════════════════════════════ */
 (() => {
   const root = document.getElementById('kei');
@@ -660,7 +660,7 @@ ScrollTrigger.create({
   },
 });
 
-// Credentials + KEI entrance (translate only — text stays readable)
+// Credentials + KEI entrance (translate only; text stays readable)
 gsap.fromTo('.js-about-stat, .js-pillar',
   { y: 14 },
   {
