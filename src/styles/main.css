@@ -2148,6 +2148,12 @@ button:focus-visible {
   transition: opacity 0.2s, color 0.2s;
 }
 .footer-col a:not(.footer-col-partner):hover { opacity: 1; color: var(--ivory); }
+.footer-address {
+  font-size: 13px;
+  color: var(--muted);
+  opacity: 0.5;
+  line-height: 1.6;
+}
 .footer-col a.footer-col-partner {
   display: inline-flex;
   margin-top: 16px;
